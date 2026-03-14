@@ -1,46 +1,69 @@
-# Liman Yönetim Sistemi
+![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)
 
-Bu proje, bir liman yönetim sisteminin basit bir simulasyonunu gerçekleştiren Python kodunu içermektedir. Liman, tırların yük indirmesini ve gemilere yük yükleme işlemlerini simüle eder.
+# Port Management Simulation System
 
-## Kullanılan Modüller
+A Python-based simulation of a port management system that models truck cargo unloading and ship loading operations using object-oriented programming, CSV data processing, and heap queue scheduling.
 
-1. `csv`: CSV dosyalarından veri okuma işlemleri için kullanılmıştır.
-2. `heapq`: Küçükten büyüğe sıralı bir kuyruk yapısı sağlamak için kullanılmıştır.
+## Features
 
-## Sınıflar
+- **Truck queue management** -- reads truck data from CSV and queues them using a min-heap
+- **Ship queue management** -- reads ship data from CSV and queues them by ship number
+- **Cargo unloading simulation** -- trucks arrive at the port and unload cargo into the staging area
+- **Ship loading simulation** -- cargo from the staging area is loaded onto ships bound for matching destinations
+- **Priority scheduling** -- heap queue ensures trucks and ships are processed in sorted order
 
-### 1. Tir Sınıfı
-Tır nesnelerinin özelliklerini ve davranışlarını tanımlar.
+## Tech Stack
 
-- `__init__(self, plaka, ulke, yirmi_ton, otuz_ton, maliyet)`: Tır nesnesini başlatır.
-- `__lt__(self, other)`: Tırları plakalarına göre sıralamak için kullanılan karşılaştırma metodu.
+| Component | Purpose |
+|-----------|---------|
+| **Python 3** | Core language |
+| **OOP** | Class-based architecture (`Truck`, `Ship`, `Port`) |
+| **csv** | Reading truck and ship data from CSV files |
+| **heapq** | Min-heap priority queue for scheduling |
 
-### 2. Gemi Sınıfı
-Gemi nesnelerinin özelliklerini ve davranışlarını tanımlar.
+## Architecture
 
-- `__init__(self, numara, kapasite, hedef_ulke)`: Gemi nesnesini başlatır.
-- `__lt__(self, other)`: Gemileri numaralarına göre sıralamak için kullanılan karşılaştırma metodu.
+### Truck (`Tir`)
 
-### 3. Liman Sınıfı
-Limanın özelliklerini ve liman işlemlerini yöneten metotları içerir.
+Represents a truck arriving at the port.
 
-- `__init__(self)`: Liman nesnesini başlatır.
-- `tir_bilgisi_okuma(self)`: Olaylar CSV dosyasından tır bilgilerini okur ve kuyruğa ekler.
-- `gemi_bilgisi_okuma(self)`: Gemiler CSV dosyasından gemi bilgilerini okur ve kuyruğa ekler.
-- `tir_yuk_indirme(self)`: Tırları istif alanına yerleştirir ve yük indirme işlemlerini simüle eder.
-- `gemi_yuk_yukleme(self)`: Gemilere tırları yükler ve limandan ayrılan gemileri takip eder.
+- `__init__(self, plate, country, twenty_ton, thirty_ton, cost)` -- initializes the truck with its license plate, origin country, container counts, and transport cost.
+- `__lt__(self, other)` -- comparison method for heap ordering by license plate.
 
-## Nasıl Kullanılır
+### Ship (`Gemi`)
 
-1. Proje dosyalarını indirin.
-2. Python yüklü değilse, [Python'un resmi web sitesinden](https://www.python.org/downloads/) Python'u indirip yükleyin.
-3. Terminal veya komut istemcisinde proje dizinine gidin.
-4. `pip install -r requirements.txt` komutu ile gerekli modülleri yükleyin.
-5. `python main.py` komutu ile programı çalıştırın.
+Represents a cargo ship docked at the port.
 
-## Örnek Kullanım
+- `__init__(self, number, capacity, destination_country)` -- initializes the ship with its ID number, cargo capacity, and destination country.
+- `__lt__(self, other)` -- comparison method for heap ordering by ship number.
 
-Proje, `olaylar.csv` ve `gemiler.csv` adlı CSV dosyalarındaki verileri kullanarak liman operasyonlarını simüle eder.
+### Port (`Liman`)
+
+Manages all port operations and orchestrates the simulation.
+
+- `__init__(self)` -- initializes the port with empty queues and staging area.
+- `read_truck_data(self)` -- reads truck records from `olaylar.csv` and enqueues them.
+- `read_ship_data(self)` -- reads ship records from `gemiler.csv` and enqueues them.
+- `unload_truck_cargo(self)` -- dequeues trucks, places cargo in the staging area.
+- `load_ship_cargo(self)` -- loads staged cargo onto ships and tracks departures.
+
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yavuzhankursun/Python-Liman-Otomasyon-Sistemi.git
+   cd Python-Liman-Otomasyon-Sistemi
+   ```
+2. Make sure Python 3 is installed. If not, download it from [python.org](https://www.python.org/downloads/).
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Usage
+
+The simulation reads data from `olaylar.csv` (truck events) and `gemiler.csv` (ships), then runs the full port workflow:
 
 ```bash
 python main.py
+```
